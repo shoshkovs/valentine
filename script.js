@@ -329,60 +329,47 @@ function makeNoButtonEscape(button) {
     let escapeCount = 0;
     const maxEscapes = 5;
     
-    button.addEventListener('mouseenter', () => {
-        if (escapeCount >= maxEscapes) {
-            // После нескольких попыток кнопка становится невидимой
-            button.style.opacity = '0';
-            button.style.pointerEvents = 'none';
-            return;
-        }
-        
-        escapeCount++;
-        button.classList.add('escaping');
-        
-        const parent = button.closest('.virus-window');
-        if (!parent) return;
-        
-        const parentRect = parent.getBoundingClientRect();
-        const buttonRect = button.getBoundingClientRect();
-        
-        // Вычисляем максимальные координаты внутри окна
-        const maxX = parentRect.width - buttonRect.width - 20;
-        const maxY = parentRect.height - buttonRect.height - 60; // Учитываем заголовок и отступы
-        
-        // Текущая позиция кнопки относительно окна
-        const currentLeft = buttonRect.left - parentRect.left;
-        const currentTop = buttonRect.top - parentRect.top;
-        
-        // Генерируем новую позицию, стараясь уйти подальше
-        let newX, newY;
-        let attempts = 0;
-        do {
-            newX = Math.random() * maxX;
-            newY = Math.random() * maxY;
-            attempts++;
-        } while (
-            attempts < 10 && 
-            Math.abs(newX - currentLeft) < 50 && 
-            Math.abs(newY - currentTop) < 50
-        );
-        
-        button.style.position = 'absolute';
-        button.style.left = `${newX}px`;
-        button.style.top = `${newY}px`;
-        button.style.right = 'auto';
-        
-        // Убираем класс после анимации
-        setTimeout(() => {
-            button.classList.remove('escaping');
-        }, 150);
-    });
+    // Убираем все hover события, если они были
+    const oldHandler = button.onmouseenter;
+    if (oldHandler) {
+        button.removeEventListener('mouseenter', oldHandler);
+    }
+    button.removeEventListener('mouseover', () => {});
     
-    // Также убегаем при попытке клика
-    button.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        // Кнопка уже убежала при наведении, просто предотвращаем действие
+    // Устанавливаем стили для позиционирования
+    button.style.position = 'absolute';
+    button.style.transition = '0.2s ease';
+    
+    // Обработчик только через click
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        if (escapeCount < maxEscapes) {
+            // Перемещаем кнопку в случайную позицию
+            const parent = button.closest('.virus-window');
+            if (!parent) return;
+            
+            const parentRect = parent.getBoundingClientRect();
+            const buttonRect = button.getBoundingClientRect();
+            
+            // Вычисляем максимальные координаты внутри окна
+            const maxX = parentRect.width - buttonRect.width - 20;
+            const maxY = parentRect.height - buttonRect.height - 60; // Учитываем заголовок и отступы
+            
+            // Генерируем новую позицию случайно
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+            
+            button.style.left = `${newX}px`;
+            button.style.top = `${newY}px`;
+            button.style.right = 'auto';
+            
+            escapeCount++;
+        } else {
+            // После 5 попыток выполняем основное действие - закрываем все вирусные окна
+            closeAllVirusWindows();
+        }
     });
 }
 
@@ -564,13 +551,13 @@ function closeXPWindow(window) {
 function openFolderWindow(folderName) {
     // Файлы из xp_folder
     const folderImages = [
-        'xp_folder1.jpeg',
-        'xp_folder2.jpeg',
-        'xp_folder3.jpeg',
-        'xp_folder4.jpeg',
-        'xp_folder5.jpeg',
-        'xp_folder6.jpeg',
-        'xp_folder7.jpeg'
+        'xp_folder1.webp',
+        'xp_folder2.webp',
+        'xp_folder3.webp',
+        'xp_folder4.webp',
+        'xp_folder5.webp',
+        'xp_folder6.webp',
+        'xp_folder7.webp'
     ];
     
     // Создаем сетку изображений
@@ -624,9 +611,9 @@ function openRecycleBinWindow() {
     const content = `
         <div class="xp-window-content">
             <div class="recycle-content">
-                <div class="recycle-item" data-image="xp_trash.jpeg">
+                <div class="recycle-item" data-image="xp_trash.webp">
                     <div class="recycle-item-icon">🖼️</div>
-                    <div class="recycle-item-name">xp_trash.jpeg</div>
+                    <div class="recycle-item-name">xp_trash.webp</div>
                 </div>
             </div>
         </div>

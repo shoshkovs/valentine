@@ -289,7 +289,7 @@ body.explosion-active {
 #desktopWallpaper {
     position: fixed;
     inset: 0;
-    background: url('photos/wind_xp_pink.png') center center no-repeat;
+    background: url('photos/wind_xp_pink.webp') center center no-repeat;
     background-size: cover;
     opacity: 0;
     transition: opacity 0.8s ease;
@@ -446,8 +446,8 @@ body.explosion-active {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
-    width: 90%;
-    max-width: 500px;
+    width: min(90vw, 500px);
+    max-height: 90vh;
     background: linear-gradient(to bottom, #f8d7e8 0%, #f0b8d0 100%);
     border: 2px solid #d485a8;
     border-top: 3px solid #ffb3d9;
@@ -462,6 +462,7 @@ body.explosion-active {
     font-family: 'MS Sans Serif', 'Segoe UI', sans-serif;
     font-size: 12px;
     user-select: none;
+    overflow-y: auto;
 }
 
 .system-popup.show {
@@ -1566,8 +1567,9 @@ body.explosion-active {
 /* Virus Window - Windows XP Style */
 .virus-window {
     position: absolute;
-    width: 320px;
+    width: min(90vw, 320px);
     min-height: 150px;
+    max-height: 90vh;
     background: #ECE9D8;
     border: 2px outset #C0C0C0;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
@@ -1575,11 +1577,14 @@ body.explosion-active {
     animation: popIn 0.2s ease-out;
     z-index: 10005;
     user-select: none;
+    overflow-y: auto;
 }
 
 .virus-window.final {
-    width: 600px;
+    position: fixed;
+    width: min(90vw, 600px);
     min-height: 300px;
+    max-height: 90vh;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%);
@@ -1783,33 +1788,93 @@ body.explosion-active {
     }
     
     .xp-window-header {
-        cursor: default;
+        cursor: default !important;
     }
-}
-
-/* Mobile Responsive for Virus Windows */
-@media (max-width: 768px) {
+    
+    /* Все окна адаптируются */
+    .xp-window,
+    .virus-window.final,
+    .image-preview-window,
+    .text-viewer-window {
+        width: 95vw;
+        max-height: 90vh;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 0;
+    }
+    
+    .xp-window-body {
+        padding: 16px;
+    }
+    
+    .xp-window-close {
+        top: 8px;
+        right: 8px;
+        width: 24px;
+        height: 24px;
+        font-size: 18px;
+    }
+    
     .virus-window {
-        width: 280px;
+        width: min(95vw, 280px);
         min-height: 130px;
+        max-height: 85vh;
     }
     
     .virus-window.final {
-        width: 90%;
-        max-width: 500px;
+        width: 95vw;
+        max-width: 95vw;
         min-height: 250px;
+        max-height: 90vh;
     }
     
     .virus-window.final .virus-content {
-        padding: 25px;
+        padding: 20px;
         font-size: 16px;
     }
     
     .virus-content {
-        padding: 15px;
+        padding: 12px;
         font-size: 12px;
     }
+    
+    .system-popup {
+        width: 95vw;
+        max-width: 95vw;
+        padding: 0;
+    }
+    
+    .popup-content {
+        padding: 16px;
+    }
+    
+    /* Изображения в окнах */
+    .xp-window-content img,
+    .image-preview-content img,
+    .image-grid-item img {
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+    }
+    
+    /* Текстовые блоки */
+    .xp-window-content,
+    .text-viewer-content {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+    }
+    
+    /* Убираем отрицательные позиции для вирусных окон */
+    .virus-window:not(.final) {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
 }
+
+/* Mobile Responsive for Virus Windows - уже включено в общий медиа-запрос выше */
 
 /* Windows XP Window Component */
 .xp-window {
@@ -1817,9 +1882,9 @@ body.explosion-active {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 600px;
-    min-height: 400px;
-    max-height: 80vh;
+    width: min(90vw, 600px);
+    min-height: 300px;
+    max-height: 90vh;
     background: #ECE9D8;
     border: 2px outset #C0C0C0;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
@@ -1828,6 +1893,7 @@ body.explosion-active {
     display: none;
     animation: windowAppear 0.18s cubic-bezier(0.22, 1, 0.36, 1);
     user-select: none;
+    overflow-y: auto;
 }
 
 .xp-window.active {
@@ -1846,6 +1912,7 @@ body.explosion-active {
     align-items: center;
     cursor: move;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
+    position: relative;
 }
 
 .xp-window-title {
@@ -1867,6 +1934,10 @@ body.explosion-active {
     align-items: center;
     justify-content: center;
     transition: background 0.1s ease;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
 }
 
 .xp-window-close:hover {
@@ -1884,12 +1955,15 @@ body.explosion-active {
     font-size: 12px;
     color: #000;
     line-height: 1.5;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 /* Image Preview Window */
 .image-preview-window {
-    width: 500px;
-    min-height: 400px;
+    width: min(90vw, 500px);
+    min-height: 300px;
+    max-height: 90vh;
 }
 
 .image-preview-content {
@@ -1901,9 +1975,12 @@ body.explosion-active {
 
 .image-preview-content img {
     max-width: 100%;
+    width: 100%;
+    height: auto;
     max-height: 60vh;
     border: 2px inset #C0C0C0;
     box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2);
+    object-fit: contain;
 }
 
 /* Back Button */
