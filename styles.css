@@ -47,7 +47,7 @@ body.explosion-active {
 
 /* Экран загрузки */
 .screen-boot {
-    background: #FFFFFF;
+    background: #DC143C;
     z-index: 1000;
     display: flex;
     align-items: center;
