@@ -217,14 +217,24 @@ function createVirusWindow(isFinal) {
     const win = document.createElement('div');
     win.className = 'virus-window';
     
+    // Проверяем, мобильное ли устройство
+    const isMobile = window.innerWidth <= 768;
+    
     if (isFinal) {
         win.classList.add('final');
     } else {
-        // Случайная позиция для обычных окон
-        const maxTop = window.innerHeight - 200;
-        const maxLeft = window.innerWidth - 350;
-        win.style.top = Math.random() * maxTop + 'px';
-        win.style.left = Math.random() * maxLeft + 'px';
+        if (isMobile) {
+            // На мобильных центрируем окна
+            win.style.top = '50%';
+            win.style.left = '50%';
+            win.style.transform = 'translate(-50%, -50%)';
+        } else {
+            // Случайная позиция для обычных окон на десктопе
+            const maxTop = Math.max(0, window.innerHeight - 200);
+            const maxLeft = Math.max(0, window.innerWidth - 350);
+            win.style.top = Math.max(0, Math.random() * maxTop) + 'px';
+            win.style.left = Math.max(0, Math.random() * maxLeft) + 'px';
+        }
     }
     
     // Случайные заголовки для обычных окон
@@ -327,13 +337,9 @@ function createVirusWindow(isFinal) {
 
 function makeNoButtonEscape(button) {
     let escapeCount = 0;
-    const maxEscapes = 5;
     
-    // Убираем все hover события, если они были
-    const oldHandler = button.onmouseenter;
-    if (oldHandler) {
-        button.removeEventListener('mouseenter', oldHandler);
-    }
+    // Убираем все hover события
+    button.removeEventListener('mouseenter', () => {});
     button.removeEventListener('mouseover', () => {});
     
     // Устанавливаем стили для позиционирования
@@ -345,27 +351,16 @@ function makeNoButtonEscape(button) {
         event.preventDefault();
         event.stopPropagation();
         
-        if (escapeCount < maxEscapes) {
-            // Перемещаем кнопку в случайную позицию
-            const parent = button.closest('.virus-window');
-            if (!parent) return;
+        if (escapeCount < 5) {
+            // Перемещаем кнопку в случайную позицию на весь экран
+            const x = Math.random() * (window.innerWidth - button.offsetWidth);
+            const y = Math.random() * (window.innerHeight - button.offsetHeight);
             
-            const parentRect = parent.getBoundingClientRect();
-            const buttonRect = button.getBoundingClientRect();
-            
-            // Вычисляем максимальные координаты внутри окна
-            const maxX = parentRect.width - buttonRect.width - 20;
-            const maxY = parentRect.height - buttonRect.height - 60; // Учитываем заголовок и отступы
-            
-            // Генерируем новую позицию случайно
-            const newX = Math.random() * maxX;
-            const newY = Math.random() * maxY;
-            
-            button.style.left = `${newX}px`;
-            button.style.top = `${newY}px`;
-            button.style.right = 'auto';
+            button.style.left = x + 'px';
+            button.style.top = y + 'px';
             
             escapeCount++;
+            // НЕ выполняем основное действие
         } else {
             // После 5 попыток выполняем основное действие - закрываем все вирусные окна
             closeAllVirusWindows();
@@ -676,8 +671,7 @@ function openImagePreview(imageName, caption = '', folderWindow = null) {
 }
 
 // System Popup Functions
-let noButtonClickCount = 0;
-const MAX_NO_CLICKS = 3;
+let escapeCount = 0;
 
 function showSystemPopup() {
     const overlay = document.getElementById('popupOverlay');
@@ -686,7 +680,7 @@ function showSystemPopup() {
     if (!overlay || !popup) return;
     
     // Сбрасываем счетчик и состояние кнопки NO
-    noButtonClickCount = 0;
+    escapeCount = 0;
     const popupNo = document.getElementById('popupNo');
     if (popupNo) {
         popupNo.style.opacity = '1';
@@ -730,11 +724,19 @@ function initPopupHandlers() {
         popupYes.addEventListener('click', handleYesClick);
     }
     
-    // NO button
+    // NO button - только через click, без hover
     if (popupNo) {
-        popupNo.addEventListener('click', handleNoClick);
-        // Предотвращаем клик вне кнопки
-        popupNo.addEventListener('mouseenter', handleNoHover);
+        // Убираем все старые обработчики (включая hover)
+        // Клонируем кнопку чтобы убрать все старые обработчики
+        const newButton = popupNo.cloneNode(true);
+        popupNo.parentNode.replaceChild(newButton, popupNo);
+        
+        // Устанавливаем стили
+        newButton.style.position = 'absolute';
+        newButton.style.transition = '0.2s ease';
+        
+        // Добавляем только click обработчик
+        newButton.addEventListener('click', handleNoClick);
     }
     
     // Close button
@@ -763,45 +765,26 @@ function handleNoClick(event) {
     event.preventDefault();
     event.stopPropagation();
     
-    noButtonClickCount++;
-    const popupNo = document.getElementById('popupNo');
-    if (!popupNo) return;
+    const button = event.target;
+    if (!button) return;
     
-    if (noButtonClickCount >= MAX_NO_CLICKS) {
-        // Кнопка исчезает после 3 попыток
-        popupNo.style.opacity = '0';
-        popupNo.style.pointerEvents = 'none';
+    if (escapeCount < 5) {
+        // Перемещаем кнопку в случайную позицию на весь экран
+        const x = Math.random() * (window.innerWidth - button.offsetWidth);
+        const y = Math.random() * (window.innerHeight - button.offsetHeight);
+        
+        button.style.left = x + 'px';
+        button.style.top = y + 'px';
+        
+        escapeCount++;
+        // НЕ выполняем основное действие
+    } else {
+        // После 5 попыток выполняем основное действие - скрываем кнопку
+        button.style.opacity = '0';
+        button.style.pointerEvents = 'none';
         setTimeout(() => {
-            popupNo.style.display = 'none';
+            button.style.display = 'none';
         }, 300);
-        return;
-    }
-    
-    // Перемещаем кнопку случайно
-    moveNoButton(popupNo);
-}
-
-function handleNoHover(event) {
-    const popupNo = event.target;
-    const popupButtons = document.querySelector('.popup-buttons');
-    
-    if (!popupButtons || noButtonClickCount >= MAX_NO_CLICKS) return;
-    
-    // Если курсор близко к кнопке, перемещаем её
-    const rect = popupNo.getBoundingClientRect();
-    const mouseX = event.clientX;
-    const mouseY = event.clientY;
-    const buttonCenterX = rect.left + rect.width / 2;
-    const buttonCenterY = rect.top + rect.height / 2;
-    
-    const distance = Math.sqrt(
-        Math.pow(mouseX - buttonCenterX, 2) + 
-        Math.pow(mouseY - buttonCenterY, 2)
-    );
-    
-    // Если курсор слишком близко, убегаем
-    if (distance < 80) {
-        moveNoButton(popupNo);
     }
 }
 
@@ -828,46 +811,6 @@ function eraseText(element, text, speed) {
     });
 }
 
-function moveNoButton(button) {
-    const popupButtons = document.querySelector('.popup-buttons');
-    if (!popupButtons) return;
-    
-    const containerRect = popupButtons.getBoundingClientRect();
-    const buttonRect = button.getBoundingClientRect();
-    
-    // Вычисляем текущую позицию кнопки относительно контейнера
-    const currentLeft = buttonRect.left - containerRect.left;
-    const currentTop = buttonRect.top - containerRect.top;
-    
-    // Случайная позиция внутри контейнера (с учетом размеров кнопки)
-    const maxX = Math.max(0, containerRect.width - buttonRect.width - 10);
-    const maxY = Math.max(0, containerRect.height - buttonRect.height - 5);
-    
-    // Генерируем новую позицию, стараясь уйти подальше от текущей
-    let randomX, randomY;
-    let attempts = 0;
-    do {
-        randomX = Math.random() * maxX;
-        randomY = Math.random() * maxY;
-        attempts++;
-    } while (
-        attempts < 10 && 
-        Math.abs(randomX - currentLeft) < 40 && 
-        Math.abs(randomY - currentTop) < 40
-    );
-    
-    button.classList.add('moving');
-    button.style.position = 'absolute';
-    button.style.left = `${randomX}px`;
-    button.style.top = `${randomY}px`;
-    button.style.right = 'auto';
-    button.style.transform = 'translate(0, 0)';
-    
-    // Убираем класс после анимации
-    setTimeout(() => {
-        button.classList.remove('moving');
-    }, 200);
-}
 
 // Экран загрузки
 function initBootScreen() {

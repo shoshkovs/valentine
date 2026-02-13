@@ -657,14 +657,42 @@ body.explosion-active {
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
+    /* Базовый стиль для всех окон на мобильных */
+    .window,
+    .xp-window,
+    .virus-window,
+    .system-popup,
+    .image-preview-window,
+    .text-viewer-window {
+        width: 95vw;
+        max-height: 90vh;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 16px;
+    }
+    
+    /* Запрещаем отрицательные позиции */
+    .window,
+    .xp-window,
+    .virus-window,
+    .system-popup,
+    .image-preview-window,
+    .text-viewer-window {
+        left: 50% !important;
+        top: 50% !important;
+        right: auto !important;
+        bottom: auto !important;
+    }
+    
     .system-popup {
-        width: 85%;
-        max-width: 400px;
+        width: 95vw;
+        max-width: 95vw;
         font-size: 11px;
     }
     
     .popup-content {
-        padding: 15px;
+        padding: 16px;
     }
     
     .warning-icon {
@@ -683,6 +711,28 @@ body.explosion-active {
         min-width: 70px;
         padding: 5px 12px;
         font-size: 10px;
+    }
+    
+    /* Кнопки закрытия */
+    .window-close,
+    .xp-window-close,
+    .virus-close,
+    .popup-close,
+    .close-button {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 10;
+    }
+    
+    /* Текстовые блоки */
+    .window-content,
+    .xp-window-content,
+    .text-viewer-content,
+    .virus-content,
+    .popup-content {
+        overflow-wrap: break-word;
+        word-wrap: break-word;
     }
 }
 
@@ -1196,18 +1246,22 @@ body.explosion-active {
     text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
-/* Окна */
+/* Окна - базовый стиль для всех окон */
 .window {
-    position: absolute;
-    background: #F6F4F2;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(90vw, 600px);
+    max-height: 90vh;
+    overflow-y: auto;
     border-radius: 12px;
+    background: #F6F4F2;
     box-shadow: 
         0 8px 24px rgba(0, 0, 0, 0.15),
         0 2px 8px rgba(0, 0, 0, 0.1);
     z-index: 10;
-    min-width: 320px;
     display: none;
-    overflow: hidden;
 }
 
 .window.active {
@@ -1242,7 +1296,12 @@ body.explosion-active {
     flex: 1;
 }
 
-.window-close {
+.window-close,
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 10;
     background: none;
     border: none;
     color: white;
@@ -1261,11 +1320,14 @@ body.explosion-active {
     background: rgba(255, 255, 255, 0.2);
 }
 
-.window-body {
+.window-body,
+.window-content {
     padding: 16px;
     background: #F6F4F2;
     font-family: 'MS Sans Serif', 'Tahoma', 'Arial', sans-serif;
     font-size: 11px;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .window-auth {
@@ -1278,7 +1340,7 @@ body.explosion-active {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 360px;
+    width: min(90vw, 360px);
 }
 
 .badge-card {
@@ -1781,51 +1843,17 @@ body.explosion-active {
         padding: 2px 4px;
     }
     
-    .xp-window {
-        width: 90%;
-        max-width: 500px;
-        min-height: 300px;
-    }
-    
-    .xp-window-header {
-        cursor: default !important;
-    }
-    
-    /* Все окна адаптируются */
-    .xp-window,
-    .virus-window.final,
-    .image-preview-window,
-    .text-viewer-window {
-        width: 95vw;
-        max-height: 90vh;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        padding: 0;
-    }
-    
     .xp-window-body {
         padding: 16px;
     }
     
-    .xp-window-close {
-        top: 8px;
-        right: 8px;
-        width: 24px;
-        height: 24px;
-        font-size: 18px;
-    }
-    
     .virus-window {
-        width: min(95vw, 280px);
-        min-height: 130px;
-        max-height: 85vh;
+        width: 95vw;
+        max-height: 90vh;
     }
     
     .virus-window.final {
         width: 95vw;
-        max-width: 95vw;
-        min-height: 250px;
         max-height: 90vh;
     }
     
@@ -1839,37 +1867,11 @@ body.explosion-active {
         font-size: 12px;
     }
     
-    .system-popup {
-        width: 95vw;
-        max-width: 95vw;
-        padding: 0;
-    }
-    
-    .popup-content {
-        padding: 16px;
-    }
-    
-    /* Изображения в окнах */
-    .xp-window-content img,
-    .image-preview-content img,
-    .image-grid-item img {
-        max-width: 100%;
-        width: 100%;
-        height: auto;
-    }
-    
-    /* Текстовые блоки */
-    .xp-window-content,
-    .text-viewer-content {
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-    }
-    
     /* Убираем отрицательные позиции для вирусных окон */
     .virus-window:not(.final) {
         position: fixed;
-        top: 50%;
-        left: 50%;
+        top: 50% !important;
+        left: 50% !important;
         transform: translate(-50%, -50%);
     }
 }
@@ -1883,8 +1885,9 @@ body.explosion-active {
     left: 50%;
     transform: translate(-50%, -50%);
     width: min(90vw, 600px);
-    min-height: 300px;
     max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 12px;
     background: #ECE9D8;
     border: 2px outset #C0C0C0;
     box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
@@ -1893,7 +1896,6 @@ body.explosion-active {
     display: none;
     animation: windowAppear 0.18s cubic-bezier(0.22, 1, 0.36, 1);
     user-select: none;
-    overflow-y: auto;
 }
 
 .xp-window.active {
@@ -1913,6 +1915,13 @@ body.explosion-active {
     cursor: move;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
     position: relative;
+}
+
+/* Отключаем draggable на мобильных устройствах */
+@media (max-width: 768px) {
+    .xp-window-header {
+        cursor: default !important;
+    }
 }
 
 .xp-window-title {
@@ -1962,7 +1971,6 @@ body.explosion-active {
 /* Image Preview Window */
 .image-preview-window {
     width: min(90vw, 500px);
-    min-height: 300px;
     max-height: 90vh;
 }
 
@@ -2041,12 +2049,24 @@ body.explosion-active {
     height: auto;
     display: block;
     border: 1px inset #C0C0C0;
+    max-width: 100%;
+}
+
+/* Адаптивные изображения во всех окнах */
+.window img,
+.xp-window img,
+.virus-window img,
+.system-popup img,
+.image-preview-content img,
+.xp-window-content img {
+    max-width: 100%;
+    height: auto;
 }
 
 /* Text Viewer */
 .text-viewer-window {
-    width: 500px;
-    min-height: 300px;
+    width: min(90vw, 500px);
+    max-height: 90vh;
 }
 
 .text-viewer-content {
@@ -2058,6 +2078,8 @@ body.explosion-active {
     border: 2px inset #C0C0C0;
     min-height: 200px;
     overflow-y: auto;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 /* Recycle Bin Content */
@@ -2191,8 +2213,8 @@ body.explosion-active {
     }
     
     .window {
-        width: calc(100% - 40px);
-        max-width: 400px;
+        width: 95vw;
+        max-width: 95vw;
     }
     
     .notification {
