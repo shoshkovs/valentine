@@ -135,7 +135,7 @@ body.explosion-active {
 
 .btn-read {
     position: absolute;
-    top: 38%;
+    top: 42%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: none;
