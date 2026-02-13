@@ -221,24 +221,14 @@ function createVirusWindow(isFinal) {
     const win = document.createElement('div');
     win.className = 'virus-window';
     
-    // Проверяем, мобильное ли устройство
-    const isMobile = window.innerWidth <= 768;
-    
     if (isFinal) {
         win.classList.add('final');
     } else {
-        if (isMobile) {
-            // На мобильных центрируем окна
-            win.style.top = '50%';
-            win.style.left = '50%';
-            win.style.transform = 'translate(-50%, -50%)';
-        } else {
-            // Случайная позиция для обычных окон на десктопе
-            const maxTop = Math.max(0, window.innerHeight - 200);
-            const maxLeft = Math.max(0, window.innerWidth - 350);
-            win.style.top = Math.max(0, Math.random() * maxTop) + 'px';
-            win.style.left = Math.max(0, Math.random() * maxLeft) + 'px';
-        }
+        // Случайная позиция для обычных окон (на всех устройствах)
+        const maxTop = Math.max(0, window.innerHeight - 200);
+        const maxLeft = Math.max(0, window.innerWidth - 350);
+        win.style.top = Math.max(0, Math.random() * maxTop) + 'px';
+        win.style.left = Math.max(0, Math.random() * maxLeft) + 'px';
     }
     
     // Случайные заголовки для обычных окон
