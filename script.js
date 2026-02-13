@@ -201,6 +201,9 @@ function startVirusEffect() {
     // Активируем контейнер для взаимодействий
     container.classList.add('active');
     
+    // ВАЖНО: НЕ добавляем обработчики кликов на container или overlay
+    // Логика закрытия вируса ТОЛЬКО на кнопке "Да"
+    
     // Количество окон (8-12)
     const windowCount = 10;
     
@@ -282,7 +285,9 @@ function createVirusWindow(isFinal) {
     // Обработчик закрытия окна - только для финального
     if (isFinal) {
         const closeBtn = win.querySelector('.virus-close');
-        closeBtn.addEventListener('click', () => {
+        closeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // Важно: запрещаем всплытие
             // На финальном окне закрытие не работает - только через "Да"
             // Но можно оставить визуальную анимацию
             closeBtn.style.opacity = '0.5';
@@ -292,10 +297,13 @@ function createVirusWindow(isFinal) {
         });
     }
     
-    // Обработчик кнопки "Да" - только для финального окна
+    // Обработчик кнопки "Да"
+    const yesBtn = win.querySelector('.yes-btn');
     if (isFinal) {
-        const yesBtn = win.querySelector('.yes-btn');
-        yesBtn.addEventListener('click', () => {
+        // Для финального окна - закрываем все вирусные окна
+        yesBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation(); // Важно: запрещаем всплытие
             // TODO: Показать анимацию сердец
             console.log('YES clicked on final window!');
             // Закрываем все окна
@@ -303,7 +311,6 @@ function createVirusWindow(isFinal) {
         });
     } else {
         // Для обычных окон - только визуальная анимация
-        const yesBtn = win.querySelector('.yes-btn');
         yesBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -313,8 +320,15 @@ function createVirusWindow(isFinal) {
                 yesBtn.style.transform = 'scale(1)';
             }, 150);
         });
-        
-        const noBtn = win.querySelector('.no-btn');
+    }
+    
+    // Обработчик кнопки "Нет"
+    const noBtn = win.querySelector('.no-btn');
+    if (isFinal) {
+        // Для финального окна - убегающая кнопка
+        makeNoButtonEscape(noBtn);
+    } else {
+        // Для обычных окон - только визуальная анимация
         noBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -326,44 +340,50 @@ function createVirusWindow(isFinal) {
         });
     }
     
-    // Обработчик кнопки "Нет" - только для финального окна
-    if (isFinal) {
-        const noBtn = win.querySelector('.no-btn');
-        makeNoButtonEscape(noBtn);
-    }
-    
     return win;
 }
 
 function makeNoButtonEscape(button) {
     let escapeCount = 0;
+    let currentX = 0;
+    let currentY = 0;
     
-    // Убираем все hover события
-    button.removeEventListener('mouseenter', () => {});
-    button.removeEventListener('mouseover', () => {});
-    
-    // Устанавливаем стили для позиционирования
-    button.style.position = 'absolute';
-    button.style.transition = '0.2s ease';
+    // Устанавливаем transition для плавного движения
+    button.style.transition = 'transform 0.2s ease';
     
     // Обработчик только через click
-    button.addEventListener('click', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
+    button.addEventListener('click', function(e) {
+        // КРИТИЧЕСКИ ВАЖНО: запрещаем всплытие события
+        e.preventDefault();
+        e.stopPropagation();
         
         if (escapeCount < 5) {
-            // Перемещаем кнопку в случайную позицию на весь экран
-            const x = Math.random() * (window.innerWidth - button.offsetWidth);
-            const y = Math.random() * (window.innerHeight - button.offsetHeight);
+            const moveDistance = 25; // Небольшое смещение
             
-            button.style.left = x + 'px';
-            button.style.top = y + 'px';
+            // Накопительное смещение - кнопка постепенно "убегает"
+            currentX += (Math.random() - 0.5) * moveDistance * 4;
+            currentY += (Math.random() - 0.5) * moveDistance * 4;
+            
+            // Применяем смещение через transform
+            button.style.transform = `translate(${currentX}px, ${currentY}px)`;
             
             escapeCount++;
             // НЕ выполняем основное действие
         } else {
-            // После 5 попыток выполняем основное действие - закрываем все вирусные окна
-            closeAllVirusWindows();
+            // После 5 нажатий кнопка исчезает, окно остается открытым
+            button.style.transition = 'opacity 0.2s ease';
+            button.style.opacity = '0';
+            button.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                button.style.display = 'none';
+                
+                // Подсвечиваем кнопку "Да" после исчезновения "Нет"
+                const yesBtn = button.parentElement.querySelector('.yes-btn');
+                if (yesBtn) {
+                    yesBtn.style.animation = 'pulse 0.6s ease';
+                }
+            }, 200);
         }
     });
 }
@@ -671,7 +691,7 @@ function openImagePreview(imageName, caption = '', folderWindow = null) {
 }
 
 // System Popup Functions
-let escapeCount = 0;
+let popupEscapeCount = 0; // Отдельная переменная для popup, чтобы не конфликтовать с вирусными окнами
 
 function showSystemPopup() {
     const overlay = document.getElementById('popupOverlay');
@@ -680,7 +700,7 @@ function showSystemPopup() {
     if (!overlay || !popup) return;
     
     // Сбрасываем счетчик и состояние кнопки NO
-    escapeCount = 0;
+    popupEscapeCount = 0;
     const popupNo = document.getElementById('popupNo');
     if (popupNo) {
         popupNo.style.opacity = '1';
@@ -762,21 +782,25 @@ function handleYesClick() {
 }
 
 function handleNoClick(event) {
-    event.preventDefault();
+    // КРИТИЧЕСКИ ВАЖНО: запрещаем всплытие события
     event.stopPropagation();
+    event.preventDefault();
     
     const button = event.target;
     if (!button) return;
     
-    if (escapeCount < 5) {
+    if (popupEscapeCount < 5) {
         // Перемещаем кнопку в случайную позицию на весь экран
-        const x = Math.random() * (window.innerWidth - button.offsetWidth);
-        const y = Math.random() * (window.innerHeight - button.offsetHeight);
+        const maxX = Math.max(0, window.innerWidth - button.offsetWidth);
+        const maxY = Math.max(0, window.innerHeight - button.offsetHeight);
+        
+        const x = Math.max(0, Math.random() * maxX);
+        const y = Math.max(0, Math.random() * maxY);
         
         button.style.left = x + 'px';
         button.style.top = y + 'px';
         
-        escapeCount++;
+        popupEscapeCount++;
         // НЕ выполняем основное действие
     } else {
         // После 5 попыток выполняем основное действие - скрываем кнопку
