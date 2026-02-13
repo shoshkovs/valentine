@@ -891,6 +891,8 @@ body.explosion-active {
         max-height: 85vh;
         position: relative;
         margin: 0 auto; /* Центрируем на мобильных */
+        margin-left: calc(50% - 30px); /* Сдвигаем немного влево */
+        transform: translateX(-50%);
         display: flex;
         align-items: center;
         justify-content: center;
