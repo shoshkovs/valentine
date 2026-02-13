@@ -15,8 +15,11 @@
 body {
     font-family: 'MS Sans Serif', 'MS Sans Serif', 'Tahoma', 'Arial', sans-serif;
     overflow: hidden;
+    overflow-x: hidden;
     height: 100vh;
     width: 100vw;
+    margin: 0;
+    padding: 0;
     background: #1E1E1E;
     color: #1E1E1E;
     font-size: 11px;
@@ -47,12 +50,15 @@ body.explosion-active {
 
 /* Экран загрузки */
 .screen-boot {
-    background: #000000;
+    background: #ffffff;
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: opacity 0.3s ease-out;
+    overflow-x: hidden;
+    width: 100%;
+    height: 100%;
 }
 
 .boot-content-wrapper {
@@ -93,30 +99,31 @@ body.explosion-active {
     display: flex;
     align-items: center;
     justify-content: center;
-    max-width: 90%;
+    width: min(90vw, 600px);
     max-height: 90vh;
-    width: 100%;
     margin: 0 auto;
 }
 
 .sims-image {
     position: absolute;
-    top: 50px;
+    top: min(50px, 8vh);
     left: 50%;
     transform: translateX(-50%);
-    width: 60px;
+    width: min(60px, 8vw);
     height: auto;
     z-index: 5;
+    display: block;
 }
 
 .computer-image {
     width: 100%;
     height: auto;
-    max-width: 800px;
+    max-width: 100%;
     max-height: 80vh;
     object-fit: contain;
     position: relative;
     z-index: 1;
+    display: block;
 }
 
 .btn-read {
@@ -781,13 +788,9 @@ body.explosion-active {
     z-index: 10;
     opacity: 0.8;
     animation: arrowMove 1.5s ease-in-out infinite;
-}
-
-.arrow {
-    position: absolute;
-    z-index: 10;
-    opacity: 0.8;
-    animation: arrowMove 1.5s ease-in-out infinite;
+    width: 15%;
+    max-width: 120px;
+    min-width: 40px;
 }
 
 .arrow-image {
@@ -796,34 +799,38 @@ body.explosion-active {
     display: block;
 }
 
-/* Размеры стрелок */
+/* Размеры стрелок - теперь через классы для вариативности */
 .arrow-size-1 {
-    width: 200px;
+    width: 12%;
+    max-width: 100px;
 }
 
 .arrow-size-2 {
-    width: 260px;
+    width: 15%;
+    max-width: 120px;
 }
 
 .arrow-size-3 {
-    width: 320px;
+    width: 18%;
+    max-width: 140px;
 }
 
 /* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
     .screen-boot {
         padding: 10px;
+        overflow-x: hidden;
     }
     
     .vintage-computer {
-        max-width: 95%;
+        width: 95vw;
         max-height: 85vh;
         position: relative;
     }
     
     .sims-image {
-        top: 20px;
-        width: 40px;
+        top: min(20px, 4vh);
+        width: min(40px, 6vw);
     }
     
     .computer-image {
@@ -835,56 +842,70 @@ body.explosion-active {
         font-size: 16px;
         padding: 6px 10px;
         top: 35%;
+        font-size: min(16px, 4vw);
     }
     
-    /* Уменьшаем размеры стрелок на мобильных */
+    /* Адаптивные размеры стрелок на мобильных */
+    .arrow {
+        width: 18%;
+        max-width: 80px;
+        opacity: 0.7;
+    }
+    
     .arrow-size-1 {
-        width: 80px;
+        width: 15%;
+        max-width: 60px;
     }
     
     .arrow-size-2 {
-        width: 100px;
+        width: 18%;
+        max-width: 80px;
     }
     
     .arrow-size-3 {
-        width: 120px;
+        width: 20%;
+        max-width: 100px;
     }
     
     /* Позиционирование стрелок на мобильных */
     .arrow-left {
-        left: -60px;
+        left: -8%;
     }
     
     .arrow-right {
-        right: -60px;
+        right: -8%;
     }
     
     .arrow-pos-1 {
-        left: -50px;
+        left: -6%;
         top: 25%;
     }
     
     .arrow-pos-2 {
-        right: -50px;
+        right: -6%;
         top: 15%;
     }
     
     .arrow-pos-3 {
-        left: -40px;
+        left: -5%;
         bottom: 25%;
     }
     
     .arrow-pos-4 {
-        right: -60px;
+        right: -8%;
         bottom: 25%;
     }
 }
 
 /* Адаптивность для очень маленьких экранов */
 @media (max-width: 480px) {
+    .vintage-computer {
+        width: 98vw;
+    }
+    
     .sims-image {
-        top: 10px;
-        width: 30px;
+        top: min(10px, 2vh);
+        width: min(30px, 5vw);
     }
     
     .computer-image {
@@ -892,22 +913,31 @@ body.explosion-active {
     }
     
     .btn-read {
-        font-size: 14px;
+        font-size: min(14px, 3.5vw);
         padding: 4px 8px;
         top: 32%;
     }
     
     /* Еще больше уменьшаем стрелки */
+    .arrow {
+        width: 12%;
+        max-width: 50px;
+        opacity: 0.6;
+    }
+    
     .arrow-size-1 {
-        width: 60px;
+        width: 10%;
+        max-width: 40px;
     }
     
     .arrow-size-2 {
-        width: 80px;
+        width: 12%;
+        max-width: 50px;
     }
     
     .arrow-size-3 {
-        width: 100px;
+        width: 15%;
+        max-width: 60px;
     }
     
     /* Скрываем некоторые стрелки на очень маленьких экранах */
@@ -917,60 +947,72 @@ body.explosion-active {
     }
     
     .arrow-left {
-        left: -40px;
+        left: -5%;
     }
     
     .arrow-right {
-        right: -40px;
+        right: -5%;
     }
     
     .arrow-pos-1 {
-        left: -35px;
+        left: -4%;
     }
     
     .arrow-pos-3 {
-        left: -30px;
+        left: -3%;
     }
 }
 
 /* Адаптивность для планшетов */
 @media (min-width: 769px) and (max-width: 1024px) {
+    .vintage-computer {
+        width: min(85vw, 550px);
+    }
+    
     .computer-image {
-        max-width: 600px;
+        max-width: 100%;
         max-height: 75vh;
     }
     
+    .arrow {
+        width: 12%;
+        max-width: 100px;
+    }
+    
     .arrow-size-1 {
-        width: 150px;
+        width: 10%;
+        max-width: 80px;
     }
     
     .arrow-size-2 {
-        width: 200px;
+        width: 12%;
+        max-width: 100px;
     }
     
     .arrow-size-3 {
-        width: 250px;
+        width: 15%;
+        max-width: 120px;
     }
     
     .arrow-left {
-        left: -120px;
+        left: -10%;
     }
     
     .arrow-right {
-        right: -120px;
+        right: -10%;
     }
 }
 
 /* Основные позиции */
 .arrow-left {
-    left: -180px;
+    left: -12%;
     top: 50%;
     transform: translateY(-50%) rotate(0deg);
     animation-name: arrowMoveLeft;
 }
 
 .arrow-right {
-    right: -180px;
+    right: -12%;
     top: 50%;
     transform: translateY(-50%) rotate(180deg);
     animation-name: arrowMoveRight;
@@ -980,7 +1022,7 @@ body.explosion-active {
 
 /* Дополнительные хаотичные позиции */
 .arrow-pos-1 {
-    left: -180px;
+    left: -10%;
     top: 30%;
     transform: rotate(15deg);
     animation-name: arrowMoveDiagonal1;
@@ -988,7 +1030,7 @@ body.explosion-active {
 }
 
 .arrow-pos-2 {
-    right: -160px;
+    right: -10%;
     top: 20%;
     transform: rotate(160deg);
     animation-name: arrowMoveDiagonal2;
@@ -996,7 +1038,7 @@ body.explosion-active {
 }
 
 .arrow-pos-3 {
-    left: -140px;
+    left: -8%;
     bottom: 30%;
     transform: rotate(-15deg);
     animation-name: arrowMoveDiagonal3;
@@ -1004,7 +1046,7 @@ body.explosion-active {
 }
 
 .arrow-pos-4 {
-    right: -200px;
+    right: -12%;
     bottom: 30%;
     transform: rotate(200deg);
     animation-name: arrowMoveDiagonal4;
