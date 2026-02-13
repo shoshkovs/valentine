@@ -1807,6 +1807,26 @@ body.explosion-active {
     transition: all 0.15s ease-out;
 }
 
+/* Мобильная адаптация для кнопки "Нет" */
+@media (max-width: 768px) {
+    .virus-buttons .no-btn {
+        /* Убеждаемся что кнопка видна на мобильных */
+        min-width: 60px;
+        padding: 6px 12px;
+        font-size: 12px;
+        /* Увеличиваем область нажатия для мобильных */
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+        touch-action: manipulation;
+    }
+    
+    .virus-buttons button {
+        /* Увеличиваем размер кнопок на мобильных для удобства */
+        min-width: 70px;
+        padding: 8px 16px;
+        font-size: 12px;
+    }
+}
+
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.1); }

@@ -210,6 +210,7 @@ function startVirusEffect() {
     for (let i = 0; i < windowCount; i++) {
         setTimeout(() => {
             const isFinal = i === windowCount - 1;
+            console.log(`Creating window ${i + 1}/${windowCount}, isFinal =`, isFinal);
             const win = createVirusWindow(isFinal);
             container.appendChild(win);
         }, i * 120); // Задержка между окнами 120ms
@@ -304,16 +305,28 @@ function createVirusWindow(isFinal) {
         yesBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation(); // Важно: запрещаем всплытие
+            
+            // Двойная защита - проверяем isFinal еще раз
+            if (!isFinal) {
+                console.warn('YES clicked but isFinal is false!');
+                return;
+            }
+            
+            console.log('YES CLICKED on final window!');
             // TODO: Показать анимацию сердец
-            console.log('YES clicked on final window!');
             // Закрываем все окна
             closeAllVirusWindows();
         });
+        
+        // Устанавливаем z-index для кнопки "Да" чтобы она была ниже "Нет"
+        yesBtn.style.position = 'relative';
+        yesBtn.style.zIndex = '1';
     } else {
         // Для обычных окон - только визуальная анимация
         yesBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
+            console.log('YES clicked on non-final window (should not close)');
             // Визуальная анимация нажатия
             yesBtn.style.transform = 'scale(0.95)';
             setTimeout(() => {
@@ -348,6 +361,10 @@ function makeNoButtonEscape(button) {
     let currentX = 0;
     let currentY = 0;
     
+    // Устанавливаем z-index чтобы кнопка "Нет" была выше "Да"
+    button.style.position = 'relative';
+    button.style.zIndex = '10';
+    
     // Устанавливаем transition для плавного движения
     button.style.transition = 'transform 0.2s ease';
     
@@ -357,12 +374,24 @@ function makeNoButtonEscape(button) {
         e.preventDefault();
         e.stopPropagation();
         
+        console.log('NO button clicked, escapeCount =', escapeCount);
+        
         if (escapeCount < 5) {
             const moveDistance = 25; // Небольшое смещение
             
             // Накопительное смещение - кнопка постепенно "убегает"
             currentX += (Math.random() - 0.5) * moveDistance * 4;
             currentY += (Math.random() - 0.5) * moveDistance * 4;
+            
+            // Ограничиваем смещение чтобы кнопка не перекрывала "Да"
+            // Получаем родительский контейнер
+            const parent = button.parentElement;
+            const maxX = parent.offsetWidth - button.offsetWidth;
+            const maxY = parent.offsetHeight - button.offsetHeight;
+            
+            // Ограничиваем смещение
+            currentX = Math.max(-maxX * 0.3, Math.min(maxX * 0.3, currentX));
+            currentY = Math.max(-maxY * 0.3, Math.min(maxY * 0.3, currentY));
             
             // Применяем смещение через transform
             button.style.transform = `translate(${currentX}px, ${currentY}px)`;
@@ -371,6 +400,7 @@ function makeNoButtonEscape(button) {
             // НЕ выполняем основное действие
         } else {
             // После 5 нажатий кнопка исчезает, окно остается открытым
+            console.log('NO button disappearing after 5 clicks');
             button.style.transition = 'opacity 0.2s ease';
             button.style.opacity = '0';
             button.style.pointerEvents = 'none';
