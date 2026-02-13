@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  valentine:
+    build: .
+    container_name: valentine
+    restart: unless-stopped
+    ports:
+      - "8080:80"  # Внутренний порт 80, внешний 8080 (можно изменить на любой свободный)
+    networks:
+      - valentine-network
+
+networks:
+  valentine-network:
+    driver: bridge
