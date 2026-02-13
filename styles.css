@@ -61,6 +61,10 @@ body.explosion-active {
     align-items: center;
     justify-content: center;
     gap: 20px;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .boot-notification {
@@ -91,12 +95,14 @@ body.explosion-active {
     justify-content: center;
     max-width: 90%;
     max-height: 90vh;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .sims-image {
     position: absolute;
     top: 50px;
-    left: 49%;
+    left: 50%;
     transform: translateX(-50%);
     width: 60px;
     height: auto;
@@ -107,6 +113,7 @@ body.explosion-active {
     width: 100%;
     height: auto;
     max-width: 800px;
+    max-height: 80vh;
     object-fit: contain;
     position: relative;
     z-index: 1;
@@ -115,7 +122,7 @@ body.explosion-active {
 .btn-read {
     position: absolute;
     top: 38%;
-    left: 49%;
+    left: 50%;
     transform: translate(-50%, -50%);
     background: none;
     border: none;
@@ -130,6 +137,7 @@ body.explosion-active {
     text-transform: lowercase;
     transition: opacity 0.2s ease;
     animation: blinkButton 1s ease-in-out infinite;
+    white-space: nowrap;
 }
 
 @keyframes blinkButton {
@@ -799,6 +807,158 @@ body.explosion-active {
 
 .arrow-size-3 {
     width: 320px;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+    .screen-boot {
+        padding: 10px;
+    }
+    
+    .vintage-computer {
+        max-width: 95%;
+        max-height: 85vh;
+        position: relative;
+    }
+    
+    .sims-image {
+        top: 20px;
+        width: 40px;
+    }
+    
+    .computer-image {
+        max-width: 100%;
+        max-height: 70vh;
+    }
+    
+    .btn-read {
+        font-size: 16px;
+        padding: 6px 10px;
+        top: 35%;
+    }
+    
+    /* Уменьшаем размеры стрелок на мобильных */
+    .arrow-size-1 {
+        width: 80px;
+    }
+    
+    .arrow-size-2 {
+        width: 100px;
+    }
+    
+    .arrow-size-3 {
+        width: 120px;
+    }
+    
+    /* Позиционирование стрелок на мобильных */
+    .arrow-left {
+        left: -60px;
+    }
+    
+    .arrow-right {
+        right: -60px;
+    }
+    
+    .arrow-pos-1 {
+        left: -50px;
+        top: 25%;
+    }
+    
+    .arrow-pos-2 {
+        right: -50px;
+        top: 15%;
+    }
+    
+    .arrow-pos-3 {
+        left: -40px;
+        bottom: 25%;
+    }
+    
+    .arrow-pos-4 {
+        right: -60px;
+        bottom: 25%;
+    }
+}
+
+/* Адаптивность для очень маленьких экранов */
+@media (max-width: 480px) {
+    .sims-image {
+        top: 10px;
+        width: 30px;
+    }
+    
+    .computer-image {
+        max-height: 60vh;
+    }
+    
+    .btn-read {
+        font-size: 14px;
+        padding: 4px 8px;
+        top: 32%;
+    }
+    
+    /* Еще больше уменьшаем стрелки */
+    .arrow-size-1 {
+        width: 60px;
+    }
+    
+    .arrow-size-2 {
+        width: 80px;
+    }
+    
+    .arrow-size-3 {
+        width: 100px;
+    }
+    
+    /* Скрываем некоторые стрелки на очень маленьких экранах */
+    .arrow-pos-2,
+    .arrow-pos-4 {
+        display: none;
+    }
+    
+    .arrow-left {
+        left: -40px;
+    }
+    
+    .arrow-right {
+        right: -40px;
+    }
+    
+    .arrow-pos-1 {
+        left: -35px;
+    }
+    
+    .arrow-pos-3 {
+        left: -30px;
+    }
+}
+
+/* Адаптивность для планшетов */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .computer-image {
+        max-width: 600px;
+        max-height: 75vh;
+    }
+    
+    .arrow-size-1 {
+        width: 150px;
+    }
+    
+    .arrow-size-2 {
+        width: 200px;
+    }
+    
+    .arrow-size-3 {
+        width: 250px;
+    }
+    
+    .arrow-left {
+        left: -120px;
+    }
+    
+    .arrow-right {
+        right: -120px;
+    }
 }
 
 /* Основные позиции */
