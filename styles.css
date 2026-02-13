@@ -12,12 +12,18 @@
     box-sizing: border-box;
 }
 
+html {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
 body {
     font-family: 'MS Sans Serif', 'MS Sans Serif', 'Tahoma', 'Arial', sans-serif;
     overflow: hidden;
     overflow-x: hidden;
-    height: 100vh;
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     margin: 0;
     padding: 0;
     background: #1E1E1E;
@@ -100,6 +106,7 @@ body.explosion-active {
     align-items: center;
     justify-content: center;
     width: min(90vw, 600px);
+    height: auto;
     max-height: 90vh;
     margin: 0 auto;
 }
@@ -172,11 +179,12 @@ body.explosion-active {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     z-index: 10001;
     display: none;
     pointer-events: none;
+    background: transparent;
 }
 
 .boom-video-container.active {
@@ -788,9 +796,7 @@ body.explosion-active {
     z-index: 10;
     opacity: 0.8;
     animation: arrowMove 1.5s ease-in-out infinite;
-    width: 15%;
-    max-width: 120px;
-    min-width: 40px;
+    width: clamp(40px, 8vw, 120px);
 }
 
 .arrow-image {
@@ -801,18 +807,15 @@ body.explosion-active {
 
 /* Размеры стрелок - теперь через классы для вариативности */
 .arrow-size-1 {
-    width: 12%;
-    max-width: 100px;
+    width: clamp(35px, 7vw, 100px);
 }
 
 .arrow-size-2 {
-    width: 15%;
-    max-width: 120px;
+    width: clamp(40px, 8vw, 120px);
 }
 
 .arrow-size-3 {
-    width: 18%;
-    max-width: 140px;
+    width: clamp(45px, 9vw, 140px);
 }
 
 /* Адаптивность для мобильных устройств */
@@ -823,7 +826,7 @@ body.explosion-active {
     }
     
     .vintage-computer {
-        width: 95vw;
+        width: min(95vw, 500px);
         max-height: 85vh;
         position: relative;
     }
@@ -834,66 +837,21 @@ body.explosion-active {
     }
     
     .computer-image {
+        width: 100%;
+        height: auto;
         max-width: 100%;
         max-height: 70vh;
     }
     
     .btn-read {
-        font-size: 16px;
+        font-size: min(16px, 4vw);
         padding: 6px 10px;
         top: 35%;
-        font-size: min(16px, 4vw);
     }
     
-    /* Адаптивные размеры стрелок на мобильных */
+    /* Скрываем стрелки на мобильных */
     .arrow {
-        width: 18%;
-        max-width: 80px;
-        opacity: 0.7;
-    }
-    
-    .arrow-size-1 {
-        width: 15%;
-        max-width: 60px;
-    }
-    
-    .arrow-size-2 {
-        width: 18%;
-        max-width: 80px;
-    }
-    
-    .arrow-size-3 {
-        width: 20%;
-        max-width: 100px;
-    }
-    
-    /* Позиционирование стрелок на мобильных */
-    .arrow-left {
-        left: -8%;
-    }
-    
-    .arrow-right {
-        right: -8%;
-    }
-    
-    .arrow-pos-1 {
-        left: -6%;
-        top: 25%;
-    }
-    
-    .arrow-pos-2 {
-        right: -6%;
-        top: 15%;
-    }
-    
-    .arrow-pos-3 {
-        left: -5%;
-        bottom: 25%;
-    }
-    
-    .arrow-pos-4 {
-        right: -8%;
-        bottom: 25%;
+        display: none;
     }
 }
 
