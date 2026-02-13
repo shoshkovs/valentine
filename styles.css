@@ -874,12 +874,31 @@ body.explosion-active {
     .screen-boot {
         padding: 10px;
         overflow-x: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .boot-content-wrapper {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     
     .vintage-computer {
         width: min(95vw, 500px);
         max-height: 85vh;
         position: relative;
+        margin: 0 auto; /* Центрируем на мобильных */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .computer-image {
+        margin: 0 auto; /* Центрируем изображение компьютера */
+        display: block;
     }
     
     .sims-image {
